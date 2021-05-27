@@ -19,7 +19,7 @@ int main() {
   glfwMakeContextCurrent(window);
 
   gladLoadGL();
-  #test
+  //test test test
 
   glViewport(0,0,360,360);
 
