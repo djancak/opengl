@@ -18,6 +18,11 @@ const char* fragmentShaderSource = "#version 330 core\n"
 " FragColor = vec4(0.8f,0.3f,0.02f,1.0f);\n"
 "}\n\0";
 
+
+void window_size_callback(GLFWwindow* window, int width, int height) {
+  return;
+}
+
 int main() {
   glfwInit(); // Initialize GLFW
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); //Tell GLFW what version of OpenGL is being used
@@ -70,9 +75,9 @@ int main() {
 
   // Vertices coordinates
   GLfloat vertices[] = {
-    -0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // Lower left corner
-    0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // Lower right corner
-    0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f // Upper corner
+    -1.0f, -1.0f, 0.0f, // Lower left corner
+    1.0f, -1.0f, 0.0f, // Lower right corner
+    0.0f, 1, 0.0f // Upper corner
   };
 
   // Create reference containers for the Vertex Array Object and the Vertex Buffer Object
@@ -110,16 +115,30 @@ int main() {
 
   glClearColor(0.07f, 0.13f, 0.17f, 1.0f); // Specify the color of the background
   glClear(GL_COLOR_BUFFER_BIT); // Clear the back buffer and assign the new color to it
-//  glfwSwapBuffers(window); // Swap the back buffer with the front buffer
 
   glUseProgram(shaderProgram); // Tell OpenGL which Shader Program we want to use
   glBindVertexArray(VAO); // Bind the VAO so OpenGL knows to use it
   glDrawArrays(GL_TRIANGLES,0,3); // Draw the triangle using the GL_TRIANGLES primitive
-  glfwSwapBuffers(window);
+  glfwSwapBuffers(window); // Swap the back buffer with the front buffer
 
+  int old_width, old_height;
+  int width = 360, height = 360;
   while (!glfwWindowShouldClose(window)) {
     glfwPollEvents();
     Sleep(100);
+
+    glfwGetFramebufferSize(window,&width,&height);
+    if (width != old_width || height != old_height) {
+      old_width = width;
+      old_height = height;
+      glViewport(0,0,width,height);
+      glClear(GL_COLOR_BUFFER_BIT); // Clear the back buffer and assign the new color to it
+      glDrawArrays(GL_TRIANGLES,0,3); // Draw the triangle using the GL_TRIANGLES primitive
+      glfwSwapBuffers(window); // Swap the back buffer with the front buffer
+    }
+    if (glfwGetKey(window, GLFW_KEY_Q)) {
+      break;
+    }
     
   }
 
